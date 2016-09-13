@@ -15,6 +15,9 @@
         "description": "Password for the Virtual Machine."
       }
     },
+      "sizeOfDataDiskInGB": { 
+        "type": "int"
+    },
     "dnsNameForPublicIP": {
       "type": "string",
       "minLength": 1,
@@ -32,25 +35,38 @@
       "metadata": {
         "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version. Allowed values: 12.04.5-LTS, 14.04.2-LTS, 15.04."
       }
-    }
+    },
+      "iamongodiskType": {
+          "type": "string",
+          "defaultValue": "Standard_LRS",
+          "allowedValues": [
+              "Standard_LRS",
+              "Standard_ZRS",
+              "Standard_GRS",
+              "Standard_RAGRS",
+              "Premium_LRS"
+          ]
+      }
   },
   "variables": {
     "imagePublisher": "Canonical",
     "imageOffer": "UbuntuServer",
     "OSDiskName": "osdiskforlinuxsimple",
     "nicName": "myVMNic",
-    "addressPrefix": "10.0.0.0/16",
-    "subnetName": "Subnet",
-    "subnetPrefix": "10.0.0.0/24",
+    "addressPrefix": "172.24.7.0/24",
+    "subnetName": "Subnet-dmz2",
+    "subnetPrefix": "172.24.7.0/25",
     "vhdStorageType": "Standard_LRS",
     "publicIPAddressType": "Dynamic",
     "vhdStorageContainerName": "vhds",
     "vmName": "MyUbuntuVM",
     "vmSize": "Standard_D1",
-    "virtualNetworkName": "MyVNET",
-    "vnetId": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+    "NetworkRS": "iaprodnew",
+    "virtualNetworkName": "iaprodneweast",
+    "vnetID": "[resourceId(variables('NetworkRS'), 'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetId'), '/subnets/', variables('subnetName'))]",
-    "vhdStorageName": "[concat('vhdstorage', uniqueString(resourceGroup().id))]"
+    "vhdStorageName": "[concat('vhdstorage', uniqueString(resourceGroup().id))]",
+      "iamongodiskName": "[concat('iamongodisk', uniqueString(resourceGroup().id))]"
   },
   "resources": [
     {
@@ -168,7 +184,19 @@
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
-          }
+          },
+          "dataDisks": [
+            {
+              "name": "datadisk1",
+              "diskSizeGB": "[parameters('sizeOfDataDiskInGB')]",
+              "lun": 0,
+              "vhd": {
+                "uri": "[concat('http://', variables('vhdStorageName'),'.blob.core.windows.net/vhds/', 'datadisk1.vhd')]"
+              },
+              "createOption": "Empty",
+              "caching": "ReadWrite"
+            }
+          ],
         },
         "networkProfile": {
           "networkInterfaces": [

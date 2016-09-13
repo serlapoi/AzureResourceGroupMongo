@@ -26,15 +26,17 @@
   <!-- vertag<:>end -->
   <ItemGroup>
     <Folder Include="Scripts\" />
-    <Folder Include="Templates\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="bitnami\bitnami.json" />
+    <None Include="bitnami\bitnami.parameters.json" />
     <None Include="Deployment.targets">
       <Visible>False</Visible>
     </None>
     <Content Include="Scripts\Deploy-AzureResourceGroup.ps1" />
     <Content Include="Templates\LinuxVirtualMachine.json" />
     <Content Include="Templates\LinuxVirtualMachine.parameters.json" />
+    <None Include="Templates\template.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>

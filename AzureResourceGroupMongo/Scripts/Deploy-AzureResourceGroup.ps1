@@ -8,8 +8,8 @@ Param(
     [switch] $UploadArtifacts,
     [string] $StorageAccountName,
     [string] $StorageContainerName = $ResourceGroupName.ToLowerInvariant() + '-stageartifacts',
-    [string] $TemplateFile = '..\Templates\LinuxVirtualMachine.json',
-    [string] $TemplateParametersFile = '..\Templates\LinuxVirtualMachine.parameters.json',
+    [string] $TemplateFile = '..\bitnami\bitnami.json',
+    [string] $TemplateParametersFile = '..\bitnami\bitnami.parameters.json',
     [string] $ArtifactStagingDirectory = '..\bin\Debug\staging',
     [string] $DSCSourceFolder = '..\DSC'
 )

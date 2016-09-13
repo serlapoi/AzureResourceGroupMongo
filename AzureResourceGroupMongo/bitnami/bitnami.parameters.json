@@ -1,0 +1,36 @@
+﻿{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "Canada East"
+    },
+    "baseUrl": {
+      "value": "https://gallery.azure.com/artifact/20151001/bitnami.production-mongodbdefault.1.0.1/Artifacts"
+    },
+    "stackId": {
+      "metadata": {
+        "description": "Stack ID - it is the Application Stack identifier."
+      },
+        "value": "bit"
+    },
+    "sshKey": {
+      "metadata": {
+        "description": "SSH rsa public key file as a string."
+      },
+      "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDaJBuO+L32MbYniNvNk2hHTHdrraHAyhfNp84i2HtWzga8sa5vD+v6m3NYbBZlJWyq9xxpKkMK+QUFd1tB4bcJX+ZKp6WF9GZDhLZcZiU4DQndG1e9Gf8kMnAPkOAeyjSkS/BUAjevzDZLd1h8AkLC8hu1Hn1bSbowyeBJf3gBTa9zXbsfiprrC94w65pJlsErGqxkxm/01mkNWBYt9nBh68hfIfkeu+PhIIWZmnXpTTBOVcWuJeQOwtNa4qGh11/lXsRZ6bP9/TOvKAbS0846oz7HBFmdedYTKWCtU37yg74whh2dr6IIV8sU+ntCCp2I4bwTDh2r1NGWhSyMf0jYLvqRLsKIppftBwGzSgYycglpNoYb2AcYgDM3C64B68hltNEYerAd/74E1VIRL8yLoPUMksHWtV9o1eWZ8g8MZ65nVR+g2FDSVzbZUA3fdsRJAmEN3hY6uelcm5hcb1NbR/iBD3KjYH2EY5BiGWKQsCsKPxTphTsESwuMh0HBsghsKg4Rz2/UkWrnj1ONl8yYSpBoWto/oN31+671MyoGeRXG3njR/saIyLjMZIQgoAq7+hlVDfaJvSExRbW5kuQxgjXGtDZELbBj9WCbiVvMnlH930U0DxR5Ubcx6iP5Xs9COSGpyqKOhbCz2SjTy0LQMPbnkFzFuTi2gkmAnaH0xw== ops-master@nurun.com"
+    },
+    "vmSize": {
+      "metadata": {
+        "description": "Size of the VM"
+      },
+      "value": "Standard_DS1"
+    },
+    "numReplicas": {
+      "value": 2
+    },
+    "arbiterCount": {
+      "value": 1
+    }
+  }
+}
