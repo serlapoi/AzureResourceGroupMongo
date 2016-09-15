@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
   "parameters": {
     "location": {
-      "value": "Canada East"
+      "value": "East US"
     },
     "baseUrl": {
       "value": "https://gallery.azure.com/artifact/20151001/bitnami.production-mongodbdefault.1.0.1/Artifacts"

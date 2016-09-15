@@ -93,7 +93,7 @@
                         "vhd": {
                             "uri": "[concat(concat(reference(resourceId('iaprodnew', 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'), parameters('virtualMachineName'), '2016812164721.vhd')]"
                         },
-                        "createOption": "fromImage"
+                        "createOption": "FromImage"
                     },
                     "dataDisks": []
                 },

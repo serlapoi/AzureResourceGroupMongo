@@ -25,9 +25,6 @@
   <Import Condition=" Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets') " Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets" />
   <!-- vertag<:>end -->
   <ItemGroup>
-    <Folder Include="Scripts\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="bitnami\bitnami.json" />
     <None Include="bitnami\bitnami.parameters.json" />
     <None Include="Deployment.targets">
@@ -36,6 +33,7 @@
     <Content Include="Scripts\Deploy-AzureResourceGroup.ps1" />
     <Content Include="Templates\LinuxVirtualMachine.json" />
     <Content Include="Templates\LinuxVirtualMachine.parameters.json" />
+    <None Include="Scripts\provisioner-first-boot.sh" />
     <None Include="Templates\template.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />

@@ -65,16 +65,18 @@
   "variables": {
     "appId": "mongodb",
     "appVersion": "3.2.7-1",
-    "StorageAccountName": "[concat(uniquestring(resourceGroup().id), 'storage')]",
+    "StorageAccountName": "iaprodnew01",
     "resourceAPIVersion": "2015-06-15",
     "publicIPAddressName": "[concat(parameters('stackId'), 'ip')]",
     "dnsPrefix": "[concat(parameters('stackId'),uniquestring(resourceGroup().id))]",
     "scriptsUri": "[concat(parameters('baseUrl'),'/')]",
     "peerAddressIndex": 0,
+    "availabilitySetName": "bitnamihs",
     "machineCount": "[add(int(parameters('numReplicas')), int(parameters('arbiterCount')))]",
     "machineTierMap": "[concat('main=1,arbiter=',int(parameters('arbiterCount')),',slave,0,')]",
     "availabilitySetPlatformFaultDomainCount": 2,
     "availabilitySetPlatformUpdateDomainCount": 2,
+    "iaresoucegroupe": "iaprodnew",
     "virtualNetworkName": "iaprodneweast",
     "subnetName": "Subnet-dmz2",
     "vnetId": "[resourceId('iaprodnew','Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
@@ -84,126 +86,9 @@
     {
       "apiVersion": "[variables('resourceAPIVersion')]",
       "location": "[parameters('location')]",
-      "type": "Microsoft.Storage/storageAccounts",
-      "name": "[variables('newStorageAccountName')]",
-      "properties": {
-        "accountType": "Standard_LRS"
-      }
-    },
-    {
-      "apiVersion": "[variables('resourceAPIVersion')]",
-      "location": "[parameters('location')]",
-      "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "network",
-      "properties": {
-        "securityRules": [
-          {
-            "name": "deny_tcp_port_any",
-            "properties": {
-              "description": "Deny inbound tcp port any from Internet",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Deny",
-              "priority": 300,
-              "direction": "Inbound"
-            }
-          },
-          {
-            "name": "pub_allow_tcp_port_22",
-            "properties": {
-              "description": "Allow inbound tcp port 22 from Internet",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": 22,
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 201,
-              "direction": "Inbound"
-            }
-          },
-          {
-            "name": "pub_allow_tcp_port_27017",
-            "properties": {
-              "description": "Allow inbound tcp port 27017 from Internet",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": 27017,
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 202,
-              "direction": "Inbound"
-            }
-          },
-          {
-            "name": "net_allow_tcp_port_22",
-            "properties": {
-              "description": "Allow inbound tcp port 22 from 10.0.0.0/16",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": 22,
-              "sourceAddressPrefix": "10.0.0.0/16",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 205,
-              "direction": "Inbound"
-            }
-          },
-          {
-            "name": "net_allow_tcp_port_27017",
-            "properties": {
-              "description": "Allow inbound tcp port 27017 from 10.0.0.0/16",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": 27017,
-              "sourceAddressPrefix": "10.0.0.0/16",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 206,
-              "direction": "Inbound"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "apiVersion": "[variables('resourceAPIVersion')]",
-      "location": "[parameters('location')]",
-      "type": "Microsoft.Network/virtualNetworks",
-      "name": "network",
-      "dependsOn": [
-        "Microsoft.Network/networkSecurityGroups/network"
-      ],
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "10.0.0.0/16"
-          ]
-        },
-        "subnets": [
-          {
-            "name": "network",
-            "properties": {
-              "addressPrefix": "10.0.0.0/16",
-              "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', 'network')]"
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "apiVersion": "[variables('resourceAPIVersion')]",
-      "location": "[parameters('location')]",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[concat(parameters('stackId'), '0nic')]",
       "dependsOn": [
-        "Microsoft.Network/virtualNetworks/network",
         "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
       ],
       "properties": {
@@ -213,7 +98,7 @@
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "subnet": {
-                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks','network'),'/subnets/', 'network')]"
+                "id": "[variables('subnetRef')]"
               },
               "publicIPAddress": {
                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
@@ -233,7 +118,6 @@
         "count": "[sub(variables('machineCount'), 1)]"
       },
       "dependsOn": [
-        "Microsoft.Network/virtualNetworks/network",
         "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
       ],
       "properties": {
@@ -243,7 +127,7 @@
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "subnet": {
-                "id": "[concat(resourceId('Microsoft.Network/virtualNetworks','network'),'/subnets/', 'network')]"
+                "id": "[variables('subnetRef')]"
               }
             }
           }
@@ -263,7 +147,7 @@
       }
     },
     {
-      "name": "[parameters('availabilitySetName')]",
+      "name": "[variables('availabilitySetName')]",
       "type": "Microsoft.Compute/availabilitySets",
       "apiVersion": "2015-06-15",
       "location": "[parameters('location')]",
@@ -282,7 +166,6 @@
         "count": "[variables('machineCount')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('newStorageAccountName'))]",
         "[concat('Microsoft.Network/networkInterfaces/', concat(parameters('stackId'), copyIndex(), 'nic'))]"
       ],
       "properties": {
@@ -314,12 +197,22 @@
           "osDisk": {
             "name": "osdisk",
             "vhd": {
-              "uri": "[concat('http://',variables('newStorageAccountName'),'.blob.core.windows.net/vhds/','os-',concat(parameters('stackId'), copyIndex()),'.vhd')]",
-              "uri": "[concat(concat(reference(resourceId('iaprodnew', 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'), parameters('virtualMachineName'), '2016812164721.vhd')]"
+              "uri": "[concat(concat(reference(resourceId('iaprodnew', 'Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'),'os-',concat(parameters('stackId'), copyIndex()),'.vhd')]"
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
-          }
+          },
+          "dataDisks": [
+            {
+              "name": "data",
+              "vhd": {
+                "uri": "[concat(concat(reference(resourceId('iaprodnew', 'Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2015-06-15').primaryEndpoints['blob'], 'vhds/'),'data-',concat(parameters('stackId'), copyIndex()),'.vhd')]"
+              },
+              "createOption": "Empty",
+              "diskSizeGB": "25",
+              "lun": 0
+            }
+          ]
         },
         "networkProfile": {
           "networkInterfaces": [
@@ -328,12 +221,6 @@
             }
           ]
         },
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": true,
-            "storageUri": "[concat('http://',variables('newStorageAccountName'),'.blob.core.windows.net')]"
-          }
-        }
       }
     },
     {
